@@ -31,7 +31,6 @@ defmodule Day1 do
     second_list = list
     |> Enum.map(&Enum.at(&1, 1))
     |> Enum.frequencies()
-    |> IO.inspect()
 
     first_list
     |> Enum.map(fn f ->
@@ -46,7 +45,7 @@ defmodule Day1 do
   end
 end
 
-{:ok, contents} = File.read("inputs/inputD1.txt")
+{:ok, contents} = File.read("inputs/input_day1.txt")
 
 list = contents
 |> String.split("\n", trim: true)
