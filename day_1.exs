@@ -45,9 +45,7 @@ defmodule Day1 do
   end
 end
 
-{:ok, contents} = File.read("inputs/input_day1.txt")
-
-list = contents
+list = File.read!("inputs/input_day1.txt")
 |> String.split("\n", trim: true)
 |> Enum.map(&DayHelper.split_numbers/1)
 
