@@ -4,7 +4,6 @@ defmodule DayHelper do
     split = String.split(line)
     [ String.to_integer(Enum.at(split, 0)), String.to_integer(Enum.at(split, 1)) ]
   end
-
 end
 
 defmodule Day1 do
