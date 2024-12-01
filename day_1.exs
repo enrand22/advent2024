@@ -18,9 +18,6 @@ end
 
 defmodule Day1 do
   def task1_find_total_distance(first_list, second_list) do
-    second_list = second_list
-    |> Enum.sort
-
     first_list
     |> Enum.sort()
     |> Enum.with_index(fn element, index -> abs(element - Enum.at(second_list, index)) end)
@@ -30,12 +27,9 @@ defmodule Day1 do
   end
 
   def task2_find_similarity(first_list, second_list) do
-    frecuencies = second_list
-    |> Enum.frequencies()
-
     first_list
     |> Enum.map(fn f ->
-      case Map.fetch(frecuencies, f) do
+      case Map.fetch(second_list, f) do
         {:ok, v } -> f * v
         :error    -> 0
       end
@@ -51,5 +45,5 @@ end
 |> Enum.map(&DayHelper.split_numbers/1)
 |> DayHelper.split_lists()
 
-Day1.task1_find_total_distance(list1, list2)
-Day1.task2_find_similarity(list1, list2)
+Day1.task1_find_total_distance(list1, list2 |> Enum.sort() )
+Day1.task2_find_similarity(list1,     list2 |> Enum.frequencies() )
