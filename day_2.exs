@@ -1,29 +1,18 @@
 defmodule DayHelper do
-  def calc_each_report( [ head | tail ]) do
+  def calc_each_report( [ head | tail ] = report, dampness \\ false ) do
     distances = calc_distance(head, [], tail)
 
-    test_signed_similarity(distances) && test_distance_threshold(distances)
+    test_signed_similarity(distances) && test_distance_threshold(distances) ||
+    (dampness && re_test(report))
   end
 
-  def calc_each_report_with_dampness( [ head | tail ] = report, recalc \\ true) do
-    distances = calc_distance(head, [], tail)
-
-    if test_signed_similarity(distances) && test_distance_threshold(distances) do
-      true
-    else
-      if recalc do
-        re_test(0, report, false)
-      else
-        false
-      end
-    end
-  end
+  def re_test(original), do: re_test(0, original, false)
 
   def re_test(_index, _original, safeness) when safeness, do: true
 
   def re_test(index, original, _safeness) when index < length(original) do
     {_, new_report} = List.pop_at(original, index)
-    re_test(index + 1, original, calc_each_report_with_dampness(new_report, false))
+    re_test(index + 1, original, calc_each_report(new_report))
   end
 
   def re_test(_index, _original, _safeness), do: false
@@ -72,7 +61,7 @@ defmodule Day2 do
 
   def task2_find_safeness_with_dampeness do
     prepare_file()
-    |> Enum.map(&DayHelper.calc_each_report_with_dampness/1)
+    |> Enum.map(&DayHelper.calc_each_report(&1, true))
     |> Enum.count(fn x -> x end)
     |> IO.inspect()
     #311
