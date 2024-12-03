@@ -1,13 +1,11 @@
 defmodule DayHelper do
-  def calc_each_report(report) do
-    [head | tail ] = report
+  def calc_each_report( [ head | tail ]) do
     distances = calc_distance(head, [], tail)
 
     test_signed_similarity(distances) && test_distance_threshold(distances)
   end
 
-  def calc_each_report_with_dampness(report, recalc \\ true) do
-    [head | tail ] = report
+  def calc_each_report_with_dampness( [ head | tail ] = report, recalc \\ true) do
     distances = calc_distance(head, [], tail)
 
     if test_signed_similarity(distances) && test_distance_threshold(distances) do
