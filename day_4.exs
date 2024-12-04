@@ -18,8 +18,7 @@ defmodule DayHelper do
        |> Enum.with_index()
        |> Enum.map(fn {w , i} -> String.duplicate(".", (word_length - 1) - i) <> w <> String.duplicate(".", i) end)
     end)
-    |> Enum.map(fn x -> DayHelper.transpose(x) end )
-    |> List.flatten()
+    |> Enum.map(&DayHelper.transpose/1)
   end
 
   def count_word(list) do
@@ -33,13 +32,7 @@ defmodule DayHelper do
 
   def count_matches(list, regex) do
     list
-    |> Enum.reduce(0, fn x, acc ->
-      if Regex.match?(regex, x) do
-       acc + 1
-      else
-       acc
-      end
-    end)
+    |> Enum.reduce(0, fn x, acc -> if Regex.match?(regex, x), do: acc + 1, else: acc end )
   end
 end
 
@@ -57,58 +50,32 @@ defmodule Day4 do
 
   d = xmatrix
   |> DayHelper.diagonal_transpose("xmas")
+  |> List.flatten()
   |> DayHelper.count_matches(~r/XMAS|SAMX/)
 
   dr = xmatrix
   |> Enum.reverse()
   |> DayHelper.diagonal_transpose("xmas")
+  |> List.flatten()
   |> DayHelper.count_matches(~r/XMAS|SAMX/)
 
   IO.inspect(Enum.sum([x, y, d, dr]))
+  #2390
   end
 
   def task2_counting_x_mases() do
     xmatrix = File.read!("inputs/input_day4.txt")
     |> String.split("\n", trim: true)
 
-    word_length = 3
-
     d = xmatrix
-    |> Enum.with_index()
-    |> Enum.map(fn {_x, i} -> Enum.slice(xmatrix, i..(i + word_length - 1))  end)
-    |> Enum.reject(fn x -> length(x) < word_length end)
-    |> Enum.map(fn x ->
-       x
-       |> Enum.with_index()
-       |> Enum.map(fn {w , i} -> String.duplicate(".", (word_length - 1) - i) <> w <> String.duplicate(".", i) end)
-    end)
-    |> Enum.map(fn x -> DayHelper.transpose(x) end )
-    |> IO.inspect()
+    |> DayHelper.diagonal_transpose("mas")
 
-    xmatrix_dr = xmatrix
+    xmatrix_r = xmatrix
     |> Enum.map(&String.reverse/1)
 
-    dr = xmatrix_dr
-    |> Enum.with_index()
-    |> Enum.map(fn {_x, i} -> Enum.slice(xmatrix_dr, i..(i + word_length - 1))  end)
-    |> Enum.reject(fn x -> length(x) < word_length end)
-    |> Enum.map(fn x ->
-       x
-       |> Enum.with_index()
-       |> Enum.map(fn {w , i} -> String.duplicate(".", (word_length - 1) - i) <> w <> String.duplicate(".", i) end)
-    end)
-    |> Enum.map(fn x -> DayHelper.transpose(x) |> Enum.reverse() end )
-    |> IO.inspect
-    # |> IO.inspect()
-    # |> DayHelper.count_matches(~r/MAS|SAM/)
-    # |> IO.inspect()
-
-    # dr = xmatrix
-    # |> Enum.reverse()
-    # |> DayHelper.diagonal_transpose("mas")
-    # |> DayHelper.count_matches(~r/MAS|SAM/)
-
-    # IO.inspect(Enum.sum([d, dr]) / 2)
+    dr = xmatrix_r
+    |> DayHelper.diagonal_transpose("mas")
+    |> Enum.map(&Enum.reverse/1)
 
     d
     |> Enum.map(&Enum.with_index/1)
@@ -119,11 +86,7 @@ defmodule Day4 do
         if v == "MAS" || v == "SAM" do
           dr_list = Enum.at(dr, i)
           vr = Enum.at(dr_list, j)
-          if vr == "MAS" || vr == "SAM" do
-            acc + 1
-          else
-            acc
-          end
+          if vr == "MAS" || vr == "SAM", do: acc + 1, else: acc
         else
           acc
         end
@@ -131,8 +94,9 @@ defmodule Day4 do
     end)
     |> Enum.sum()
     |> IO.inspect()
+    #1809
   end
 end
 
-#Day4.task1_counting_xmases
+Day4.task1_counting_xmases
 Day4.task2_counting_x_mases
