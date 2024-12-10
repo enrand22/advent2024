@@ -47,14 +47,30 @@ defmodule DayHelper do
     |> Enum.map(&String.split(&1,","))
   end
 
-  # def redo_manual(manual, upper_values) do
-  #   r = Enum.find_index(manual, fn {d, _} -> d end)
-  #   {v, l} = List.pop_at(manual, r)
+  def fix_manual(manual, rules) do
+    {_, line} = manual
+    |> Enum.reverse()
+    |> Enum.find(fn {b, _} -> b end)
 
-  #   new_manual = List.insert_at(l, r - 1, v)
-  #   |> Enum.map(fn {_, v} -> v end)
-  #   |> DayHelper.find_line_in_manual(upper_values)
-  # end
+    fixed_manual = move_value(line, manual, rules)
+    if Enum.all?(fixed_manual, fn {b, _} -> !b end) do
+      fixed_manual
+    else
+      fix_manual(fixed_manual, rules)
+    end
+  end
+
+  def move_value(line, manual, rules) do
+    rule = Map.get(rules, line)
+    original_manual = Keyword.values(manual)
+
+    current_index = Enum.find_index(original_manual, fn x -> x == line end)
+    min_index     = Enum.find_index(original_manual, fn x -> Enum.member?(rule, x)  end)
+
+    { { _ , value}, list } = List.pop_at(manual, current_index)
+    List.insert_at(list, min_index, {false, value})
+  end
+
 
   def test_manual(manual) do
     manual
@@ -85,9 +101,12 @@ defmodule Day5 do
 
     DayHelper.manuals
     |> Enum.map(&DayHelper.find_line_in_manual(&1, upper_values))
-    |> IO.inspect(charlists: :as_list)
+#   |> IO.inspect(charlists: :as_list)
     |> Enum.reject(fn t -> Enum.all?(t, fn {b, _} -> !b end) end)
     |> Enum.map(&Enum.reverse/1)
+    |> Enum.map(&DayHelper.fix_manual(&1, upper_values) |> Keyword.values())
+    |> Enum.map(&DayHelper.find_line_in_manual(&1, upper_values))
+    |> DayHelper.test_manual()
     |> IO.inspect()
   end
 end
