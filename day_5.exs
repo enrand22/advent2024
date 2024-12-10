@@ -97,11 +97,9 @@ defmodule Day5 do
 
   def task2_fixing_wrong_manuals do
     upper_values = DayHelper.rules
-    |>IO.inspect()
 
     DayHelper.manuals
     |> Enum.map(&DayHelper.find_line_in_manual(&1, upper_values))
-#   |> IO.inspect(charlists: :as_list)
     |> Enum.reject(fn t -> Enum.all?(t, fn {b, _} -> !b end) end)
     |> Enum.map(&Enum.reverse/1)
     |> Enum.map(&DayHelper.fix_manual(&1, upper_values) |> Keyword.values())
@@ -111,5 +109,5 @@ defmodule Day5 do
   end
 end
 
-# Day5.task1_finding_correct_manuals
+Day5.task1_finding_correct_manuals
 Day5.task2_fixing_wrong_manuals
