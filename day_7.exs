@@ -6,7 +6,7 @@ defmodule DayHelper do
 
   def generate(r) do
     Enum.reduce(1..r, [[]], fn _, acc ->
-      for combination <- acc, option <- ["*", "+"] do
+      for combination <- acc, option <- ["*", "+", "||"] do
         [option | combination]
       end
     end)
@@ -31,8 +31,9 @@ defmodule DayHelper do
             x
           else
             case Enum.at(list_of_operators, i - 1) do
-            "+" -> acc + x
-            "*" -> acc * x
+            "+"  -> acc + x
+            "*"  -> acc * x
+            "||" -> String.to_integer("#{acc}#{x}")
             end
           end
       end)
