@@ -63,7 +63,4 @@ Enum.map(0..(map_size(defrag) - 1), fn i ->
 end)
 |> Enum.sum()
 |> IO.inspect()
-
-#90119246415
-#90119246419
 #6299243228569
